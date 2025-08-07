@@ -17,6 +17,7 @@ import {
   List,
   Eye,
 } from "lucide-react"
+import Link from "next/link"
 
 // Form data interface
 interface TaskFormData {
@@ -296,21 +297,30 @@ export default function PostTaskWizard() {
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <div className="flex-shrink-0">
-              <h1 className="text-2xl font-bold text-[#1A202C]">Aarambh</h1>
+              <Link href='/'><h1 className="text-2xl font-bold text-[#1A202C]">Aarambh</h1></Link>
             </div>
 
             {/* Desktop Navigation */}
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-8">
-                <a href="/ngo/dashboard" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">
+                <Link
+                  href="/ngo/dashboard"
+                  className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200"
+                >
                   Dashboard
-                </a>
-                <a href="#post-task" className="text-[#FF9933] font-medium">
+                </Link>
+                <Link
+                  href="/ngo/post-task"
+                  className="text-[#FF9933] font-medium"
+                >
                   Post a Task
-                </a>
-                <a href="#volunteers" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">
+                </Link>
+                <Link
+                  href="/ngo/post-task"
+                  className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200"
+                >
                   Find Volunteers
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -328,28 +338,28 @@ export default function PostTaskWizard() {
 
               {isProfileOpen && (
                 <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2">
-                  <a
-                    href="#organization-profile"
+                  <Link
+                    href="/ngo/dashboard"
                     className="flex items-center px-4 py-2 text-[#1A202C] hover:bg-[#F7FAFC] transition-colors duration-200"
                   >
                     <Building size={16} className="mr-2" />
                     Organization Profile
-                  </a>
-                  <a
-                    href="#settings"
+                  </Link>
+                  <Link
+                    href="/ngo/dashboard"
                     className="flex items-center px-4 py-2 text-[#1A202C] hover:bg-[#F7FAFC] transition-colors duration-200"
                   >
                     <Settings size={16} className="mr-2" />
                     Settings
-                  </a>
+                  </Link>
                   <hr className="my-2" />
-                  <a
-                    href="#logout"
+                  <Link
+                    href="/"
                     className="flex items-center px-4 py-2 text-[#1A202C] hover:bg-[#F7FAFC] transition-colors duration-200"
                   >
                     <LogOut size={16} className="mr-2" />
                     Log Out
-                  </a>
+                  </Link>
                 </div>
               )}
             </div>

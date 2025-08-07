@@ -14,6 +14,7 @@ import {
   X,
   ChevronLeft,
 } from "lucide-react"
+import Link from "next/link"
 
 // Mock data for applicants
 const mockApplicants = [
@@ -311,42 +312,50 @@ function MobileDetailView({
 }
 
 export default function ReviewApplicantsPage() {
-  const [isProfileOpen, setIsProfileOpen] = useState(false)
-  const [selectedApplicant, setSelectedApplicant] = useState(mockApplicants[0])
-  const [showConfirmModal, setShowConfirmModal] = useState(false)
+  const [selectedApplicant, setSelectedApplicant] = useState<(typeof mockApplicants)[0] | null>(null)
   const [isMobileDetailView, setIsMobileDetailView] = useState(false)
-  const [fadeKey, setFadeKey] = useState(0)
+  const [isProfileOpen, setIsProfileOpen] = useState(false)
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false)
+  const [actionType, setActionType] = useState<'accept' | 'decline' | null>(null)
 
   const handleApplicantSelect = (applicant: (typeof mockApplicants)[0]) => {
+    setSelectedApplicant(applicant)
     if (window.innerWidth < 768) {
-      setSelectedApplicant(applicant)
       setIsMobileDetailView(true)
-    } else {
-      setSelectedApplicant(applicant)
-      setFadeKey((prev) => prev + 1) // Trigger fade transition
     }
   }
 
   const handleAccept = () => {
-    setShowConfirmModal(true)
+    setActionType('accept')
+    setIsConfirmationModalOpen(true)
   }
 
   const handleConfirmAccept = () => {
-    console.log("Accepting applicant:", selectedApplicant.name)
-    setShowConfirmModal(false)
-    // Handle acceptance logic here
+    // Handle accept logic
+    console.log('Accepted applicant:', selectedApplicant?.name)
+    setIsConfirmationModalOpen(false)
+    setSelectedApplicant(null)
+    setIsMobileDetailView(false)
   }
 
   const handleDecline = () => {
-    console.log("Declining applicant:", selectedApplicant.name)
-    // Handle decline logic here
+    setActionType('decline')
+    setIsConfirmationModalOpen(true)
+  }
+
+  const handleConfirmDecline = () => {
+    // Handle decline logic
+    console.log('Declined applicant:', selectedApplicant?.name)
+    setIsConfirmationModalOpen(false)
+    setSelectedApplicant(null)
+    setIsMobileDetailView(false)
   }
 
   // Mobile detail view
   if (isMobileDetailView) {
     return (
       <MobileDetailView
-        applicant={selectedApplicant}
+        applicant={selectedApplicant!}
         onBack={() => setIsMobileDetailView(false)}
         onAccept={handleAccept}
         onDecline={handleDecline}
@@ -362,21 +371,23 @@ export default function ReviewApplicantsPage() {
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <div className="flex-shrink-0">
-              <h1 className="text-2xl font-bold text-[#1A202C]">Aarambh</h1>
+              <Link href="/" className="text-2xl font-bold text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">
+                Aarambh
+              </Link>
             </div>
 
             {/* Desktop Navigation */}
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-8">
-                <a href="/ngo/dashboard" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">
+                <Link href="/ngo/dashboard" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">
                   Dashboard
-                </a>
-                <a href="#post-task" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">
+                </Link>
+                <Link href="/ngo/post-task" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">
                   Post a Task
-                </a>
-                <a href="#volunteers" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">
+                </Link>
+                <Link href="/browse-tasks" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">
                   Find Volunteers
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -394,28 +405,28 @@ export default function ReviewApplicantsPage() {
 
               {isProfileOpen && (
                 <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2">
-                  <a
-                    href="#organization-profile"
+                  <Link
+                    href="/profile/greenearth"
                     className="flex items-center px-4 py-2 text-[#1A202C] hover:bg-[#F7FAFC] transition-colors duration-200"
                   >
                     <Building size={16} className="mr-2" />
                     Organization Profile
-                  </a>
-                  <a
-                    href="#settings"
+                  </Link>
+                  <Link
+                    href="/profile/greenearth"
                     className="flex items-center px-4 py-2 text-[#1A202C] hover:bg-[#F7FAFC] transition-colors duration-200"
                   >
                     <Settings size={16} className="mr-2" />
                     Settings
-                  </a>
+                  </Link>
                   <hr className="my-2" />
-                  <a
-                    href="#logout"
+                  <Link
+                    href="/"
                     className="flex items-center px-4 py-2 text-[#1A202C] hover:bg-[#F7FAFC] transition-colors duration-200"
                   >
                     <LogOut size={16} className="mr-2" />
                     Log Out
-                  </a>
+                  </Link>
                 </div>
               )}
             </div>
@@ -426,13 +437,13 @@ export default function ReviewApplicantsPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <a
+          <Link
             href="/ngo/dashboard"
             className="inline-flex items-center text-[#FF9933] hover:text-[#1A202C] transition-colors duration-200 mb-4"
           >
             <ArrowLeft size={20} className="mr-2" />
             Back to Dashboard
-          </a>
+          </Link>
           <h1 className="text-3xl md:text-4xl font-bold text-[#1A202C]">Applicants for: {taskData.title}</h1>
           <p className="text-[#718096] mt-2">{mockApplicants.length} applications received</p>
         </div>
@@ -448,7 +459,7 @@ export default function ReviewApplicantsPage() {
                   <ApplicantCard
                     key={applicant.id}
                     applicant={applicant}
-                    isSelected={selectedApplicant.id === applicant.id}
+                    isSelected={selectedApplicant?.id === applicant.id}
                     onClick={() => handleApplicantSelect(applicant)}
                   />
                 ))}
@@ -458,10 +469,10 @@ export default function ReviewApplicantsPage() {
 
           {/* Right Panel - Selected Applicant Details (70%) */}
           <div className="lg:col-span-7">
-            <div key={fadeKey} className="animate-fade-in">
+            <div key={selectedApplicant?.id} className="animate-fade-in">
               {/* Header */}
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-[#1A202C]">{selectedApplicant.name}</h2>
+                <h2 className="text-2xl font-bold text-[#1A202C]">{selectedApplicant?.name}</h2>
                 <button className="border-2 border-[#FF9933] text-[#FF9933] px-4 py-2 rounded-lg font-medium hover:bg-[#FF9933] hover:text-white transition-colors duration-200 flex items-center">
                   <ExternalLink size={16} className="mr-2" />
                   View Public Portfolio
@@ -471,15 +482,15 @@ export default function ReviewApplicantsPage() {
               {/* Profile Summary */}
               <div className="flex items-center space-x-4 mb-8 p-4 bg-[#F7FAFC] rounded-lg">
                 <img
-                  src={selectedApplicant.profilePicture || "/placeholder.svg"}
-                  alt={selectedApplicant.name}
+                  src={selectedApplicant?.profilePicture || "/placeholder.svg"}
+                  alt={selectedApplicant?.name}
                   className="w-16 h-16 rounded-full object-cover"
                 />
                 <div>
-                  <h3 className="font-bold text-[#1A202C]">{selectedApplicant.name}</h3>
-                  <p className="text-[#718096]">{selectedApplicant.headline}</p>
+                  <h3 className="font-bold text-[#1A202C]">{selectedApplicant?.name}</h3>
+                  <p className="text-[#718096]">{selectedApplicant?.headline}</p>
                   <p className="text-sm text-[#718096] mt-1">
-                    Applied on {new Date(selectedApplicant.appliedDate).toLocaleDateString()}
+                    Applied on {new Date(selectedApplicant?.appliedDate || "").toLocaleDateString()}
                   </p>
                 </div>
               </div>
@@ -491,8 +502,8 @@ export default function ReviewApplicantsPage() {
                   <div className="flex items-center">
                     <FileText className="w-10 h-10 text-[#FF9933] mr-4" />
                     <div>
-                      <p className="font-medium text-[#1A202C]">{selectedApplicant.submittedDocument.filename}</p>
-                      <p className="text-sm text-[#718096]">{selectedApplicant.submittedDocument.size}</p>
+                      <p className="font-medium text-[#1A202C]">{selectedApplicant?.submittedDocument.filename}</p>
+                      <p className="text-sm text-[#718096]">{selectedApplicant?.submittedDocument.size}</p>
                     </div>
                   </div>
                   <button className="bg-[#FF9933] text-white px-6 py-3 rounded-lg font-medium hover:scale-105 transition-transform duration-200 flex items-center">
@@ -506,7 +517,7 @@ export default function ReviewApplicantsPage() {
               <div className="mb-8">
                 <h3 className="text-xl font-bold text-[#1A202C] mb-4">Their Responses</h3>
                 <div className="space-y-6">
-                  {selectedApplicant.responses.map((response, index) => (
+                  {selectedApplicant?.responses.map((response, index) => (
                     <div key={index}>
                       <p className="font-medium text-[#1A202C] mb-3">{response.question}</p>
                       <blockquote className="border-l-4 border-[#FF9933] pl-6 italic text-[#718096] bg-[#F7FAFC] p-4 rounded-r-lg">
@@ -521,7 +532,7 @@ export default function ReviewApplicantsPage() {
               <div className="mb-8">
                 <h3 className="text-xl font-bold text-[#1A202C] mb-4">Volunteer's Skills</h3>
                 <div className="flex flex-wrap gap-3">
-                  {selectedApplicant.skills.map((skill) => (
+                  {selectedApplicant?.skills.map((skill) => (
                     <span
                       key={skill}
                       className="px-4 py-2 bg-[#FF9933]/10 text-[#FF9933] rounded-full border border-[#FF9933]/20 font-medium"
@@ -556,10 +567,10 @@ export default function ReviewApplicantsPage() {
 
       {/* Confirmation Modal */}
       <ConfirmationModal
-        isOpen={showConfirmModal}
-        onClose={() => setShowConfirmModal(false)}
-        onConfirm={handleConfirmAccept}
-        volunteerName={selectedApplicant.name}
+        isOpen={isConfirmationModalOpen}
+        onClose={() => setIsConfirmationModalOpen(false)}
+        onConfirm={actionType === 'accept' ? handleConfirmAccept : handleConfirmDecline}
+        volunteerName={selectedApplicant?.name || ''}
       />
 
       <style jsx>{`

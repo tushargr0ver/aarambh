@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { Menu, X, Search, Puzzle, Star, ChevronRight, Linkedin, Twitter } from 'lucide-react'
 
 export default function LandingPage() {
@@ -45,24 +46,26 @@ export default function LandingPage() {
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <div className="flex-shrink-0">
-              <h1 className="text-2xl font-bold text-[#1A202C]">Aarambh</h1>
+              <Link href="/" className="text-2xl font-bold text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">
+                Aarambh
+              </Link>
             </div>
 
             {/* Desktop Navigation */}
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-8">
                 <a href="#how-it-works" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">How It Works</a>
-                <a href="#for-ngos" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">For NGOs</a>
-                <a href="#browse-tasks" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">Browse Tasks</a>
+                <Link href="/ngo/dashboard" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">For NGOs</Link>
+                <Link href="/browse-tasks" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">Browse Tasks</Link>
               </div>
             </div>
 
             {/* Desktop Auth Buttons */}
             <div className="hidden md:flex items-center space-x-4">
-              <a href="#login" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">Log In</a>
-              <button className="bg-[#FF9933] text-white px-6 py-2 rounded-lg font-medium hover:scale-105 transition-transform duration-200">
+              <Link href="/dashboard" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">Log In</Link>
+              <Link href="/dashboard" className="bg-[#FF9933] text-white px-6 py-2 rounded-lg font-medium hover:scale-105 transition-transform duration-200">
                 Sign Up
-              </button>
+              </Link>
             </div>
 
             {/* Mobile menu button */}
@@ -81,12 +84,12 @@ export default function LandingPage() {
             <div className="md:hidden">
               <div className="px-2 pt-2 pb-3 space-y-1 bg-white border-t">
                 <a href="#how-it-works" className="block px-3 py-2 text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">How It Works</a>
-                <a href="#for-ngos" className="block px-3 py-2 text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">For NGOs</a>
-                <a href="#browse-tasks" className="block px-3 py-2 text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">Browse Tasks</a>
-                <a href="#login" className="block px-3 py-2 text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">Log In</a>
-                <button className="w-full mt-2 bg-[#FF9933] text-white px-6 py-2 rounded-lg font-medium">
+                <Link href="/ngo/dashboard" className="block px-3 py-2 text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">For NGOs</Link>
+                <Link href="/browse-tasks" className="block px-3 py-2 text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">Browse Tasks</Link>
+                <Link href="/dashboard" className="block px-3 py-2 text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">Log In</Link>
+                <Link href="/dashboard" className="w-full mt-2 bg-[#FF9933] text-white px-6 py-2 rounded-lg font-medium">
                   Sign Up
-                </button>
+                </Link>
               </div>
             </div>
           )}
@@ -105,12 +108,12 @@ export default function LandingPage() {
                 Aarambh connects you with non-profits for short, skill-based volunteering tasks. Make a real difference, one micro-task at a time.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <button className="bg-[#FF9933] text-white px-8 py-4 rounded-lg font-medium text-lg hover:scale-105 transition-transform duration-200">
+                <Link href="/browse-tasks" className="bg-[#FF9933] text-white px-8 py-4 rounded-lg font-medium text-lg hover:scale-105 transition-transform duration-200 text-center">
                   Explore Opportunities
-                </button>
-                <button className="border-2 border-[#FF9933] text-[#FF9933] px-8 py-4 rounded-lg font-medium text-lg hover:bg-[#FF9933] hover:text-white transition-colors duration-200">
+                </Link>
+                <Link href="/ngo/dashboard" className="border-2 border-[#FF9933] text-[#FF9933] px-8 py-4 rounded-lg font-medium text-lg hover:bg-[#FF9933] hover:text-white transition-colors duration-200 text-center">
                   I'm an NGO
-                </button>
+                </Link>
               </div>
             </div>
             <div className="flex justify-center">
@@ -182,9 +185,9 @@ export default function LandingPage() {
                 <span className="px-3 py-1 bg-gray-200 text-[#1A202C] text-sm rounded-full">Graphic Design</span>
                 <span className="px-3 py-1 bg-gray-200 text-[#1A202C] text-sm rounded-full">Social Media</span>
               </div>
-              <a href="#" className="text-[#FF9933] font-medium hover:text-[#1A202C] transition-colors duration-200 flex items-center">
+              <Link href="/task/1" className="text-[#FF9933] font-medium hover:text-[#1A202C] transition-colors duration-200 flex items-center">
                 View Details <ChevronRight className="w-4 h-4 ml-1" />
-              </a>
+              </Link>
             </div>
 
             <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md hover:-translate-y-1 transition-all duration-200">
@@ -194,9 +197,9 @@ export default function LandingPage() {
                 <span className="px-3 py-1 bg-gray-200 text-[#1A202C] text-sm rounded-full">Translation</span>
                 <span className="px-3 py-1 bg-gray-200 text-[#1A202C] text-sm rounded-full">Education</span>
               </div>
-              <a href="#" className="text-[#FF9933] font-medium hover:text-[#1A202C] transition-colors duration-200 flex items-center">
+              <Link href="/task/2" className="text-[#FF9933] font-medium hover:text-[#1A202C] transition-colors duration-200 flex items-center">
                 View Details <ChevronRight className="w-4 h-4 ml-1" />
-              </a>
+              </Link>
             </div>
 
             <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md hover:-translate-y-1 transition-all duration-200">
@@ -206,15 +209,15 @@ export default function LandingPage() {
                 <span className="px-3 py-1 bg-gray-200 text-[#1A202C] text-sm rounded-full">Content Writing</span>
                 <span className="px-3 py-1 bg-gray-200 text-[#1A202C] text-sm rounded-full">Healthcare</span>
               </div>
-              <a href="#" className="text-[#FF9933] font-medium hover:text-[#1A202C] transition-colors duration-200 flex items-center">
+              <Link href="/task/3" className="text-[#FF9933] font-medium hover:text-[#1A202C] transition-colors duration-200 flex items-center">
                 View Details <ChevronRight className="w-4 h-4 ml-1" />
-              </a>
+              </Link>
             </div>
           </div>
           <div className="text-center">
-            <button className="bg-[#FF9933] text-white px-8 py-4 rounded-lg font-medium text-lg hover:scale-105 transition-transform duration-200">
+            <Link href="/browse-tasks" className="bg-[#FF9933] text-white px-8 py-4 rounded-lg font-medium text-lg hover:scale-105 transition-transform duration-200">
               Browse All Tasks
-            </button>
+            </Link>
           </div>
         </div>
       </section>
@@ -224,9 +227,9 @@ export default function LandingPage() {
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl font-bold text-[#1A202C] mb-6">Ready to Make a Difference?</h2>
           <p className="text-xl text-[#718096] mb-8">Join a community of changemakers today. Your skills are needed.</p>
-          <button className="bg-[#FF9933] text-white px-12 py-4 rounded-lg font-medium text-xl hover:scale-105 transition-transform duration-200">
+          <Link href="/dashboard" className="bg-[#FF9933] text-white px-12 py-4 rounded-lg font-medium text-xl hover:scale-105 transition-transform duration-200">
             Sign Up for Free
-          </button>
+          </Link>
         </div>
       </section>
 
@@ -235,7 +238,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-2xl font-bold mb-4">Aarambh</h3>
+              <Link href="/" className="text-2xl font-bold mb-4 hover:text-[#FF9933] transition-colors duration-200">Aarambh</Link>
               <p className="text-gray-400">Connecting skills with social impact, one task at a time.</p>
             </div>
             <div>
@@ -248,14 +251,14 @@ export default function LandingPage() {
             <div>
               <h4 className="font-semibold mb-4">For Volunteers</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors duration-200">Browse Tasks</a></li>
-                <li><a href="#" className="hover:text-white transition-colors duration-200">How it Works</a></li>
+                <li><Link href="/browse-tasks" className="hover:text-white transition-colors duration-200">Browse Tasks</Link></li>
+                <li><a href="#how-it-works" className="hover:text-white transition-colors duration-200">How it Works</a></li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold mb-4">For NGOs</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors duration-200">Post a Task</a></li>
+                <li><Link href="/ngo/post-task" className="hover:text-white transition-colors duration-200">Post a Task</Link></li>
               </ul>
               <div className="flex space-x-4 mt-6">
                 <a href="#" className="text-gray-400 hover:text-white transition-colors duration-200">
@@ -268,7 +271,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="border-t border-gray-700 mt-12 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 Aarambh. All rights reserved.</p>
+            <p>&copy; 2025 Aarambh. All rights reserved.</p>
           </div>
         </div>
       </footer>
