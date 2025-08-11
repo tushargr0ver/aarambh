@@ -223,17 +223,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Final CTA Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-[#F7FAFC] fade-in-section opacity-0">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl font-bold text-[#1A202C] mb-6">Ready to Make a Difference?</h2>
-          <p className="text-xl text-[#718096] mb-8">Join a community of changemakers today. Your skills are needed.</p>
-          <Link href="/dashboard" className="bg-[#FF9933] text-white px-12 py-4 rounded-lg font-medium text-xl hover:scale-105 transition-transform duration-200">
-            Sign Up for Free
-          </Link>
-        </div>
-      </section>
-
       {/* Footer */}
       <footer className="bg-[#1A202C] text-white py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
