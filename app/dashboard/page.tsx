@@ -18,7 +18,7 @@ import {
 import Link from "next/link";
 
 // Mock data
-const dashboardData = {
+const initialDashboardData = {
   volunteer: {
     name: "John Doe",
     totalTasks: 15,
@@ -229,6 +229,26 @@ function SkillPieChart({ data }: { data: Array<{ skill: string; percentage: numb
 export default function VolunteerDashboard() {
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [activeTab, setActiveTab] = useState("active")
+  const [dashboardData, setDashboardData] = useState(initialDashboardData);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch('/api/dashboard');
+        const data = await response.json();
+        setDashboardData(data);
+      } catch (error) {
+        console.error("Failed to fetch dashboard data:", error);
+        // Optionally, set an error state to show a message to the user
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -242,7 +262,13 @@ export default function VolunteerDashboard() {
         return "bg-gray-100 text-gray-800"
     }
   }
-
+if (isLoading) {
+    return (
+        <div className="min-h-screen bg-white flex items-center justify-center">
+            <div className="text-xl font-medium text-[#718096]">Loading Dashboard...</div>
+        </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
@@ -259,9 +285,9 @@ export default function VolunteerDashboard() {
             {/* Desktop Navigation */}
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-8">
-                <a href="#how-it-works" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">
+                <Link href="/#how-it-works" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">
                   How It Works
-                </a>
+                </Link>
                 <Link href="/ngo/dashboard" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">
                   For NGOs
                 </Link>

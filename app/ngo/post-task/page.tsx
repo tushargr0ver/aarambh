@@ -18,6 +18,7 @@ import {
   Eye,
 } from "lucide-react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 // Form data interface
 interface TaskFormData {
@@ -233,6 +234,9 @@ export default function PostTaskWizard() {
   const [formData, setFormData] = useState<TaskFormData>(initialFormData)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [newQuestion, setNewQuestion] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   const steps = [
     { number: 1, title: "The Basics" },
@@ -256,12 +260,46 @@ export default function PostTaskWizard() {
     updateFormData("screeningQuestions", updated)
   }
 
+  const handleSubmit = async () => {
+    if (!canProceed()) return;
+
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      const response = await fetch('/api/post-task', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to post task");
+      }
+
+      const result = await response.json();
+      console.log("Task posted successfully:", result.task);
+      alert("Task posted successfully!");
+      // Redirect to the NGO dashboard or a confirmation page
+      router.push('/ngo/dashboard');
+
+    } catch (err: any) {
+      setError(err.message);
+      console.error(err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const nextStep = () => {
     if (currentStep < 3) {
       setCurrentStep(currentStep + 1)
     } else {
-      // Navigate to preview
-      console.log("Navigate to preview with data:", formData)
+      // On the final step, call the submit handler
+      handleSubmit();
     }
   }
 
@@ -316,7 +354,7 @@ export default function PostTaskWizard() {
                   Post a Task
                 </Link>
                 <Link
-                  href="/ngo/post-task"
+                  href="/ngo/find-volunteers"
                   className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200"
                 >
                   Find Volunteers
@@ -631,18 +669,25 @@ export default function PostTaskWizard() {
 
             <button
               onClick={nextStep}
-              disabled={!canProceed()}
+              disabled={!canProceed() || isSubmitting}
               className={`flex items-center px-8 py-3 rounded-lg font-medium transition-all duration-200 ${
-                canProceed()
+                canProceed() && !isSubmitting
                   ? "bg-[#FF9933] text-white hover:scale-105"
                   : "bg-gray-300 text-gray-500 cursor-not-allowed"
               }`}
             >
               {currentStep === 3 ? (
-                <>
-                  <Eye size={16} className="mr-2" />
-                  Preview Task
-                </>
+                isSubmitting ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                    Submitting...
+                  </>
+                ) : (
+                  <>
+                    <Eye size={16} className="mr-2" />
+                    Submit & Post Task
+                  </>
+                )
               ) : (
                 <>
                   Next: {steps[currentStep]?.title}
@@ -651,6 +696,7 @@ export default function PostTaskWizard() {
               )}
             </button>
           </div>
+          {error && <p className="text-red-500 text-center mt-4">{error}</p>}
         </div>
       </div>
 
