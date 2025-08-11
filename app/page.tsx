@@ -5,36 +5,37 @@ import Link from 'next/link'
 import { Menu, X, Search, Puzzle, Star, ChevronRight, Linkedin, Twitter } from 'lucide-react'
 
 export default function LandingPage() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isScrolled, setIsScrolled] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10)
-    }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+      // Set isScrolled to true if user has scrolled more than 10px
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     const observerOptions = {
       threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    }
+      rootMargin: '0px 0px -50px 0px',
+    };
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('animate-fade-in')
+          entry.target.classList.add('animate-fade-in');
         }
-      })
-    }, observerOptions)
+      });
+    }, observerOptions);
 
-    const elements = document.querySelectorAll('.fade-in-section')
-    elements.forEach((el) => observer.observe(el))
+    const elements = document.querySelectorAll('.fade-in-section');
+    elements.forEach((el) => observer.observe(el));
 
-    return () => observer.disconnect()
-  }, [])
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div className="min-h-screen bg-white font-sans">

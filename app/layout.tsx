@@ -3,28 +3,25 @@ import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
 import './globals.css'
 
+import Footer from '@/components/Footer'
+import UIWrapper from '@/components/UIWrapper' // this is the new wrapper
+
 export const metadata: Metadata = {
   title: 'Aarambh',
-  description: '',
+  description: 'A collaborative learning platform',
 }
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode
-}>) {
+}) {
   return (
-    <html lang="en">
-      <head>
-        <style>{`
-html {
-  font-family: ${GeistSans.style.fontFamily};
-  --font-sans: ${GeistSans.variable};
-  --font-mono: ${GeistMono.variable};
-}
-        `}</style>
-      </head>
-      <body>{children}</body>
+    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
+      <body className="bg-white text-black font-sans">
+        <UIWrapper>{children}</UIWrapper>
+        <Footer />
+      </body>
     </html>
   )
 }
