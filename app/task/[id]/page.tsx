@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { ChevronDown, User, Settings, LogOut, MapPin, Clock, Calendar, Tag, CheckCircle, Share2, Facebook, Twitter, Linkedin, Upload, X } from 'lucide-react'
+import Link from 'next/link'
 
 // Mock task data
 const taskData = {
@@ -56,15 +57,17 @@ export default function TaskDetailsPage() {
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <div className="flex-shrink-0">
-              <h1 className="text-2xl font-bold text-[#1A202C]">Aarambh</h1>
+              <Link href="/" className="text-2xl font-bold text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">
+                Aarambh
+              </Link>
             </div>
 
             {/* Desktop Navigation */}
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-8">
                 <a href="#how-it-works" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">How It Works</a>
-                <a href="#for-ngos" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">For NGOs</a>
-                <a href="/browse-tasks" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">Browse Tasks</a>
+                <Link href="/ngo/dashboard" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">For NGOs</Link>
+                <Link href="/browse-tasks" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">Browse Tasks</Link>
               </div>
             </div>
 
@@ -82,19 +85,19 @@ export default function TaskDetailsPage() {
 
               {isProfileOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2">
-                  <a href="#dashboard" className="flex items-center px-4 py-2 text-[#1A202C] hover:bg-[#F7FAFC] transition-colors duration-200">
+                  <Link href="/dashboard" className="flex items-center px-4 py-2 text-[#1A202C] hover:bg-[#F7FAFC] transition-colors duration-200">
                     <User size={16} className="mr-2" />
                     My Dashboard
-                  </a>
-                  <a href="#settings" className="flex items-center px-4 py-2 text-[#1A202C] hover:bg-[#F7FAFC] transition-colors duration-200">
+                  </Link>
+                  <Link href="/profile/johndoe" className="flex items-center px-4 py-2 text-[#1A202C] hover:bg-[#F7FAFC] transition-colors duration-200">
                     <Settings size={16} className="mr-2" />
                     Settings
-                  </a>
+                  </Link>
                   <hr className="my-2" />
-                  <a href="#logout" className="flex items-center px-4 py-2 text-[#1A202C] hover:bg-[#F7FAFC] transition-colors duration-200">
+                  <Link href="/" className="flex items-center px-4 py-2 text-[#1A202C] hover:bg-[#F7FAFC] transition-colors duration-200">
                     <LogOut size={16} className="mr-2" />
                     Log Out
-                  </a>
+                  </Link>
                 </div>
               )}
             </div>

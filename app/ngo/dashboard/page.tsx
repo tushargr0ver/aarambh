@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import Link from "next/link"
 import {
   ChevronDown,
   Building,
@@ -140,14 +141,20 @@ function ActionsDropdown({ taskId }: { taskId: number }) {
         <>
           <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
           <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-20">
-            <button className="flex items-center w-full px-4 py-2 text-[#1A202C] hover:bg-[#F7FAFC] transition-colors duration-200">
+            <Link
+              href={`/ngo/task/${taskId}/applicants`}
+              className="flex items-center w-full px-4 py-2 text-[#1A202C] hover:bg-[#F7FAFC] transition-colors duration-200"
+            >
               <Eye size={16} className="mr-2" />
               View Applicants
-            </button>
-            <button className="flex items-center w-full px-4 py-2 text-[#1A202C] hover:bg-[#F7FAFC] transition-colors duration-200">
+            </Link>
+            <Link
+              href={`/ngo/task/${taskId}/edit`}
+              className="flex items-center w-full px-4 py-2 text-[#1A202C] hover:bg-[#F7FAFC] transition-colors duration-200"
+            >
               <Edit size={16} className="mr-2" />
               Edit Task
-            </button>
+            </Link>
             <hr className="my-2" />
             <button className="flex items-center w-full px-4 py-2 text-red-600 hover:bg-red-50 transition-colors duration-200">
               <X size={16} className="mr-2" />
@@ -182,14 +189,15 @@ function MobileTaskCard({ task }: { task: (typeof ngoData.tasks)[0] }) {
       </div>
 
       <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-        <button
+        <Link
+          href={`/ngo/task/${task.id}/applicants`}
           className={`text-sm font-medium ${
             task.hasNewApplications ? "text-[#FF9933] hover:text-[#1A202C]" : "text-[#718096] hover:text-[#1A202C]"
           } transition-colors duration-200`}
         >
           {task.applicants} Applicant{task.applicants !== 1 ? "s" : ""}
           {task.hasNewApplications && <span className="ml-1 w-2 h-2 bg-[#FF9933] rounded-full inline-block"></span>}
-        </button>
+        </Link>
       </div>
     </div>
   )
@@ -225,21 +233,23 @@ export default function NGODashboard() {
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <div className="flex-shrink-0">
-              <h1 className="text-2xl font-bold text-[#1A202C]">Aarambh</h1>
+              <Link href="/" className="text-2xl font-bold text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">
+                Aarambh
+              </Link>
             </div>
 
             {/* Desktop Navigation */}
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-8">
-                <a href="#dashboard" className="text-[#FF9933] font-medium">
+                <Link href="/ngo/dashboard" className="text-[#FF9933] font-medium">
                   Dashboard
-                </a>
-                <a href="#post-task" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">
+                </Link>
+                <Link href="/ngo/post-task" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">
                   Post a Task
-                </a>
-                <a href="#volunteers" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">
+                </Link>
+                <Link href="/ngo/post-task" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">
                   Find Volunteers
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -257,28 +267,28 @@ export default function NGODashboard() {
 
               {isProfileOpen && (
                 <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2">
-                  <a
-                    href="#organization-profile"
+                  <Link
+                    href="/ngo/dashboard"
                     className="flex items-center px-4 py-2 text-[#1A202C] hover:bg-[#F7FAFC] transition-colors duration-200"
                   >
                     <Building size={16} className="mr-2" />
                     Organization Profile
-                  </a>
-                  <a
-                    href="#settings"
+                  </Link>
+                  <Link
+                    href="/profile/greenearth"
                     className="flex items-center px-4 py-2 text-[#1A202C] hover:bg-[#F7FAFC] transition-colors duration-200"
                   >
                     <Settings size={16} className="mr-2" />
                     Settings
-                  </a>
+                  </Link>
                   <hr className="my-2" />
-                  <a
-                    href="#logout"
+                  <Link
+                    href="/"
                     className="flex items-center px-4 py-2 text-[#1A202C] hover:bg-[#F7FAFC] transition-colors duration-200"
                   >
                     <LogOut size={16} className="mr-2" />
                     Log Out
-                  </a>
+                  </Link>
                 </div>
               )}
             </div>
@@ -290,10 +300,10 @@ export default function NGODashboard() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-[#1A202C] mb-4 sm:mb-0">Welcome, {ngoData.name}!</h1>
-          <button className="bg-[#FF9933] text-white px-6 py-3 rounded-lg font-medium hover:scale-105 transition-transform duration-200 flex items-center">
+          <Link href="/ngo/post-task" className="bg-[#FF9933] text-white px-6 py-3 rounded-lg font-medium hover:scale-105 transition-transform duration-200 flex items-center">
             <Plus size={18} className="mr-2" />
             Post a New Task
-          </button>
+          </Link>
         </div>
 
         {/* Stats Overview Section */}
@@ -343,10 +353,10 @@ export default function NGODashboard() {
               <div className="text-6xl mb-4">📝</div>
               <h3 className="text-xl font-bold text-[#1A202C] mb-2">You haven't posted any tasks yet.</h3>
               <p className="text-[#718096] mb-6">Start connecting with volunteers by posting your first task.</p>
-              <button className="bg-[#FF9933] text-white px-8 py-4 rounded-lg font-medium text-lg hover:scale-105 transition-transform duration-200 flex items-center mx-auto">
+              <Link href="/ngo/post-task" className="bg-[#FF9933] text-white px-8 py-4 rounded-lg font-medium text-lg hover:scale-105 transition-transform duration-200 flex items-center mx-auto">
                 <Plus size={20} className="mr-2" />
                 Post a New Task
-              </button>
+              </Link>
             </div>
           ) : (
             <>
@@ -380,7 +390,8 @@ export default function NGODashboard() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-[#718096]">{formatDate(task.postedDate)}</td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <button
+                          <Link
+                            href={`/ngo/task/${task.id}/applicants`}
                             className={`font-medium ${
                               task.hasNewApplications
                                 ? "text-[#FF9933] hover:text-[#1A202C]"
@@ -391,7 +402,7 @@ export default function NGODashboard() {
                             {task.hasNewApplications && (
                               <span className="ml-2 w-2 h-2 bg-[#FF9933] rounded-full"></span>
                             )}
-                          </button>
+                          </Link>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <StatusBadge status={task.status} color={task.statusColor} />
