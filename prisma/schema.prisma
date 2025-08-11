@@ -1,0 +1,153 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  passwordHash      String    
+  role      Role
+  createdAt DateTime  @default(now())
+  lastLogin DateTime?
+
+  // Relations
+  volunteerProfile VolunteerProfile?
+  ngoProfile       NgoProfile?
+  applications     Application[]
+  tasks            Task[]            @relation("NgoTasks")
+  feedbackGiven    Feedback[]        @relation("FeedbackFrom")
+  feedbackReceived Feedback[]        @relation("FeedbackTo")
+}
+
+enum Role {
+  volunteer
+  ngo
+}
+
+model VolunteerProfile {
+  userId       String   @id @map("user_id")
+  user         User     @relation(fields: [userId], references: [id])
+  skills       String[]
+  availability Json
+  bio          String?
+  location     String?
+  languages    String[]
+  interests    String[]
+}
+
+model NgoProfile {
+  userId             String  @id @map("user_id")
+  user               User    @relation(fields: [userId], references: [id])
+  organizationName   String
+  logoUrl            String?
+  missionStatement   String
+  verified           Boolean @default(false)
+  category           String
+  registrationNumber String
+  officialEmail      String
+  phoneNumber        String
+  website            String?
+  location           String
+  certificateUrl     String
+}
+
+model Task {
+  id                     String       @id @default(uuid())
+  ngoId                  String
+  ngo                    User         @relation("NgoTasks", fields: [ngoId], references: [id])
+  title                  String
+  description            String
+  skillsRequired         String[]
+  category               TaskCategory
+  locationType           LocationType
+  location               String?
+  estimatedHours         Int
+  volunteersNeeded       Int
+  completionTimeline     DateTime
+  confirmationDeadline   DateTime
+  questionsForApplicants Json
+  createdAt              DateTime     @default(now())
+  status                 TaskStatus   @default(open)
+
+  applications Application[]
+}
+
+enum TaskStatus {
+  open
+  closed
+  in_progress
+  completed
+}
+
+enum TaskCategory {
+  design
+  tech
+  writing
+  research
+  other
+}
+
+enum LocationType {
+  remote
+  onsite
+  hybrid
+}
+
+model Application {
+  id               String            @id @default(uuid())
+  taskId           String
+  volunteerId      String
+  task             Task              @relation(fields: [taskId], references: [id])
+  volunteer        User              @relation(fields: [volunteerId], references: [id])
+  answers          Json
+  resumeUrl        String?
+  status           ApplicationStatus @default(pending)
+  rejectionMessage String?
+  createdAt        DateTime          @default(now())
+  acceptedAt       DateTime?
+  rejectedAt       DateTime?
+  confirmedAt      DateTime?
+  startedAt        DateTime?
+  completedAt      DateTime?
+
+  feedback Feedback[]
+}
+
+enum ApplicationStatus {
+  pending
+  accepted
+  rejected
+}
+
+model Feedback {
+  id             String   @id @default(uuid())
+  applicationId  String
+  fromUserId     String
+  toUserId       String
+  rating         Int
+  comment        String?
+  badgeId        String?
+  certificateUrl String?
+  createdAt      DateTime @default(now())
+
+  application Application @relation(fields: [applicationId], references: [id])
+  fromUser    User        @relation("FeedbackFrom", fields: [fromUserId], references: [id])
+  toUser      User        @relation("FeedbackTo", fields: [toUserId], references: [id])
+  badge       Badge?      @relation(fields: [badgeId], references: [id])
+}
+
+model Badge {
+  id          String @id @default(uuid())
+  name        String
+  description String
+  iconUrl     String
+
+  feedbacks Feedback[]
+}

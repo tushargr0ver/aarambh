@@ -1,97 +1,38 @@
-'use client'
-
-import { useState, useEffect } from 'react'
-import { Menu, X, Search, Puzzle, Star, ChevronRight, Linkedin, Twitter } from 'lucide-react'
+"use client";
+import { useEffect } from 'react';
+import { Search, Puzzle, Star, ChevronRight } from 'lucide-react';
 
 export default function LandingPage() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isScrolled, setIsScrolled] = useState(false)
-
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10)
-    }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+      // You could implement scroll behavior if needed
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     const observerOptions = {
       threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    }
+      rootMargin: '0px 0px -50px 0px',
+    };
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('animate-fade-in')
+          entry.target.classList.add('animate-fade-in');
         }
-      })
-    }, observerOptions)
+      });
+    }, observerOptions);
 
-    const elements = document.querySelectorAll('.fade-in-section')
-    elements.forEach((el) => observer.observe(el))
+    const elements = document.querySelectorAll('.fade-in-section');
+    elements.forEach((el) => observer.observe(el));
 
-    return () => observer.disconnect()
-  }, [])
-
+    return () => observer.disconnect();
+  }, []);
   return (
     <div className="min-h-screen bg-white font-sans">
-      {/* Navigation */}
-      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-white/95 backdrop-blur-sm shadow-sm' : 'bg-white/90 backdrop-blur-sm'
-      }`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Logo */}
-            <div className="flex-shrink-0">
-              <h1 className="text-2xl font-bold text-[#1A202C]">Aarambh</h1>
-            </div>
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:block">
-              <div className="ml-10 flex items-baseline space-x-8">
-                <a href="#how-it-works" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">How It Works</a>
-                <a href="#for-ngos" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">For NGOs</a>
-                <a href="#browse-tasks" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">Browse Tasks</a>
-              </div>
-            </div>
-
-            {/* Desktop Auth Buttons */}
-            <div className="hidden md:flex items-center space-x-4">
-              <a href="#login" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">Log In</a>
-              <button className="bg-[#FF9933] text-white px-6 py-2 rounded-lg font-medium hover:scale-105 transition-transform duration-200">
-                Sign Up
-              </button>
-            </div>
-
-            {/* Mobile menu button */}
-            <div className="md:hidden">
-              <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200"
-              >
-                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-              </button>
-            </div>
-          </div>
-
-          {/* Mobile Navigation */}
-          {isMenuOpen && (
-            <div className="md:hidden">
-              <div className="px-2 pt-2 pb-3 space-y-1 bg-white border-t">
-                <a href="#how-it-works" className="block px-3 py-2 text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">How It Works</a>
-                <a href="#for-ngos" className="block px-3 py-2 text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">For NGOs</a>
-                <a href="#browse-tasks" className="block px-3 py-2 text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">Browse Tasks</a>
-                <a href="#login" className="block px-3 py-2 text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">Log In</a>
-                <button className="w-full mt-2 bg-[#FF9933] text-white px-6 py-2 rounded-lg font-medium">
-                  Sign Up
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </nav>
 
       {/* Hero Section */}
       <section className="pt-24 pb-16 px-4 sm:px-6 lg:px-8 fade-in-section opacity-0">
@@ -229,49 +170,6 @@ export default function LandingPage() {
           </button>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="bg-[#1A202C] text-white py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <h3 className="text-2xl font-bold mb-4">Aarambh</h3>
-              <p className="text-gray-400">Connecting skills with social impact, one task at a time.</p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Platform</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors duration-200">About Us</a></li>
-                <li><a href="#" className="hover:text-white transition-colors duration-200">Contact</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">For Volunteers</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors duration-200">Browse Tasks</a></li>
-                <li><a href="#" className="hover:text-white transition-colors duration-200">How it Works</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">For NGOs</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors duration-200">Post a Task</a></li>
-              </ul>
-              <div className="flex space-x-4 mt-6">
-                <a href="#" className="text-gray-400 hover:text-white transition-colors duration-200">
-                  <Linkedin size={20} />
-                </a>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors duration-200">
-                  <Twitter size={20} />
-                </a>
-              </div>
-            </div>
-          </div>
-          <div className="border-t border-gray-700 mt-12 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 Aarambh. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
 
       <style jsx>{`
         .animate-fade-in {
