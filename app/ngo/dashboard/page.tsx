@@ -18,63 +18,7 @@ import {
   Calendar,
 } from "lucide-react"
 
-// Mock NGO data
-const ngoData = {
-  name: "GreenEarth Foundation",
-  stats: {
-    activeTasks: 4,
-    pendingApplications: 12,
-    tasksCompleted: 25,
-    volunteersEngaged: 50,
-  },
-  tasks: [
-    {
-      id: 1,
-      title: "Design Social Media Graphics for Earth Day Campaign",
-      postedDate: "2024-01-15",
-      applicants: 8,
-      hasNewApplications: true,
-      status: "Live",
-      statusColor: "green",
-    },
-    {
-      id: 2,
-      title: "Translate Educational Content to Spanish",
-      postedDate: "2024-01-12",
-      applicants: 3,
-      hasNewApplications: false,
-      status: "In Progress",
-      statusColor: "blue",
-    },
-    {
-      id: 3,
-      title: "Write Blog Post on Climate Change Impact",
-      postedDate: "2024-01-10",
-      applicants: 12,
-      hasNewApplications: true,
-      status: "Live",
-      statusColor: "green",
-    },
-    {
-      id: 4,
-      title: "Create Infographic on Water Conservation",
-      postedDate: "2024-01-08",
-      applicants: 0,
-      hasNewApplications: false,
-      status: "Live",
-      statusColor: "green",
-    },
-    {
-      id: 5,
-      title: "Develop Volunteer Training Materials",
-      postedDate: "2024-01-05",
-      applicants: 5,
-      hasNewApplications: false,
-      status: "Closed",
-      statusColor: "gray",
-    },
-  ],
-}
+// Mock NGO data is now removed from the component
 
 // Animated Counter Component
 function AnimatedCounter({ end, duration = 2000 }: { end: number; duration?: number }) {
@@ -206,12 +150,34 @@ function MobileTaskCard({ task }: { task: (typeof ngoData.tasks)[0] }) {
 export default function NGODashboard() {
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const [dashboardData, setDashboardData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768)
     }
 
+    const fetchDashboardData = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await fetch('/api/ngo/dashboard');
+        if (!response.ok) {
+          throw new Error('Failed to fetch dashboard data. Please try again later.');
+        }
+        const data = await response.json();
+        setDashboardData(data);
+      } catch (err: any) {
+        setError(err.message);
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDashboardData();
     checkMobile()
     window.addEventListener("resize", checkMobile)
     return () => window.removeEventListener("resize", checkMobile)
@@ -223,6 +189,29 @@ export default function NGODashboard() {
       day: "numeric",
       year: "numeric",
     })
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-xl font-medium text-[#718096]">Loading Dashboard...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-xl font-medium text-red-500 text-center p-4">
+          <p>Oops! Something went wrong.</p>
+          <p>{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!dashboardData) {
+    return null; // Or a more specific "No data found" component
   }
 
   return (
@@ -299,7 +288,7 @@ export default function NGODashboard() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-[#1A202C] mb-4 sm:mb-0">Welcome, {ngoData.name}!</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-[#1A202C] mb-4 sm:mb-0">Welcome, {dashboardData.name}!</h1>
           <Link href="/ngo/post-task" className="bg-[#FF9933] text-white px-6 py-3 rounded-lg font-medium hover:scale-105 transition-transform duration-200 flex items-center">
             <Plus size={18} className="mr-2" />
             Post a New Task
@@ -311,7 +300,7 @@ export default function NGODashboard() {
           <div className="bg-white border-2 border-gray-200 rounded-lg p-6 text-center hover:shadow-md transition-shadow duration-200">
             <Clock className="w-8 h-8 text-[#FF9933] mx-auto mb-4" />
             <div className="text-3xl font-bold text-[#1A202C] mb-2">
-              <AnimatedCounter end={ngoData.stats.activeTasks} />
+              <AnimatedCounter end={dashboardData.stats.activeTasks} />
             </div>
             <p className="text-[#718096] font-medium">Active Tasks</p>
           </div>
@@ -319,7 +308,7 @@ export default function NGODashboard() {
           <div className="bg-white border-2 border-[#FF9933] rounded-lg p-6 text-center hover:shadow-md transition-shadow duration-200">
             <Users className="w-8 h-8 text-[#FF9933] mx-auto mb-4" />
             <div className="text-3xl font-bold text-[#1A202C] mb-2">
-              <AnimatedCounter end={ngoData.stats.pendingApplications} />
+              <AnimatedCounter end={dashboardData.stats.pendingApplications} />
             </div>
             <p className="text-[#718096] font-medium">Pending Applications</p>
           </div>
@@ -327,7 +316,7 @@ export default function NGODashboard() {
           <div className="bg-white border-2 border-gray-200 rounded-lg p-6 text-center hover:shadow-md transition-shadow duration-200">
             <CheckCircle className="w-8 h-8 text-[#FF9933] mx-auto mb-4" />
             <div className="text-3xl font-bold text-[#1A202C] mb-2">
-              <AnimatedCounter end={ngoData.stats.tasksCompleted} />
+              <AnimatedCounter end={dashboardData.stats.tasksCompleted} />
             </div>
             <p className="text-[#718096] font-medium">Tasks Completed</p>
           </div>
@@ -335,7 +324,7 @@ export default function NGODashboard() {
           <div className="bg-white border-2 border-gray-200 rounded-lg p-6 text-center hover:shadow-md transition-shadow duration-200">
             <Users className="w-8 h-8 text-[#FF9933] mx-auto mb-4" />
             <div className="text-3xl font-bold text-[#1A202C] mb-2">
-              <AnimatedCounter end={ngoData.stats.volunteersEngaged} />
+              <AnimatedCounter end={dashboardData.stats.volunteersEngaged} />
             </div>
             <p className="text-[#718096] font-medium">Volunteers Engaged</p>
           </div>
@@ -347,7 +336,7 @@ export default function NGODashboard() {
             <h2 className="text-2xl font-bold text-[#1A202C]">Your Posted Tasks</h2>
           </div>
 
-          {ngoData.tasks.length === 0 ? (
+          {dashboardData.tasks.length === 0 ? (
             /* Empty State */
             <div className="text-center py-16">
               <div className="text-6xl mb-4">📝</div>
@@ -383,7 +372,7 @@ export default function NGODashboard() {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {ngoData.tasks.map((task) => (
+                    {dashboardData.tasks.map((task: any) => (
                       <tr key={task.id} className="hover:bg-[#F7FAFC] transition-colors duration-200">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="font-bold text-[#1A202C]">{task.title}</div>
@@ -418,7 +407,7 @@ export default function NGODashboard() {
 
               {/* Mobile Cards */}
               <div className="md:hidden p-4 space-y-4">
-                {ngoData.tasks.map((task) => (
+                {dashboardData.tasks.map((task: any) => (
                   <MobileTaskCard key={task.id} task={task} />
                 ))}
               </div>

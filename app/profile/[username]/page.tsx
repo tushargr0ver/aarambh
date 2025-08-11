@@ -1,93 +1,34 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { MapPin, Share2, Star, Award, Users, Clock, Calendar } from "lucide-react"
 
-// Mock volunteer data
-const volunteerData = {
-  name: "Sarah Chen",
-  headline: "UX Designer passionate about creating accessible digital experiences for social good",
-  location: "San Francisco, CA",
-  profilePicture: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
+// Define a type for the profile data for type safety
+interface ProfileData {
+  name: string;
+  headline: string;
+  location: string;
+  profilePicture: string;
   stats: {
-    tasksCompleted: 23,
-    ngosHelped: 12,
-    hoursContributed: 67,
-  },
-  badges: [
-    { id: 1, name: "Impact Maker", icon: "🌟", description: "Completed 20+ tasks" },
-    { id: 2, name: "Community Star", icon: "⭐", description: "Helped 10+ NGOs" },
-    { id: 3, name: "Skill Hero", icon: "🎯", description: "Expert in multiple skills" },
-    { id: 4, name: "Speed Demon", icon: "⚡", description: "Consistently meets deadlines" },
-    { id: 5, name: "Team Player", icon: "🤝", description: "Excellent collaboration" },
-    { id: 6, name: "Quality Champion", icon: "💎", description: "High-quality deliverables" },
-  ],
-  topSkills: [
-    "UX/UI Design",
-    "Graphic Design",
-    "Prototyping",
-    "User Research",
-    "Adobe Creative Suite",
-    "Figma",
-    "Spanish Translation",
-    "Content Writing",
-  ],
-  completedTasks: [
-    {
-      id: 1,
-      ngoName: "GreenEarth Foundation",
-      taskTitle: "Redesign Mobile App Interface for Environmental Tracking",
-      completionDate: "January 2024",
-      feedback:
-        "Sarah's redesign completely transformed our user experience. The new interface is intuitive, beautiful, and has increased user engagement by 40%. Her attention to accessibility made our app usable for everyone.",
-      rating: 5,
-      ngoLogo: "🌱",
-    },
-    {
-      id: 2,
-      ngoName: "EduForAll Initiative",
-      taskTitle: "Create Visual Learning Materials for Adult Literacy Program",
-      completionDate: "December 2023",
-      feedback:
-        "The infographics and visual aids Sarah created have been game-changing for our adult learners. Her ability to simplify complex concepts into clear, engaging visuals is remarkable.",
-      rating: 5,
-      ngoLogo: "📚",
-    },
-    {
-      id: 3,
-      ngoName: "HealthFirst Network",
-      taskTitle: "Design Patient Information Brochures in English and Spanish",
-      completionDate: "November 2023",
-      feedback:
-        "Sarah delivered beautiful, culturally sensitive materials that our patients love. Her bilingual skills and design expertise made this project a huge success.",
-      rating: 5,
-      ngoLogo: "🏥",
-    },
-    {
-      id: 4,
-      ngoName: "TechForGood",
-      taskTitle: "User Experience Audit for Nonprofit Management Platform",
-      completionDate: "October 2023",
-      feedback:
-        "Sarah's UX audit was thorough and insightful. Her recommendations led to a 60% improvement in user satisfaction scores. Professional and detail-oriented work.",
-      rating: 5,
-      ngoLogo: "💻",
-    },
-    {
-      id: 5,
-      ngoName: "CleanWater Project",
-      taskTitle: "Design Interactive Dashboard for Water Quality Monitoring",
-      completionDate: "September 2023",
-      feedback:
-        "The dashboard Sarah designed helps us visualize water quality data in ways we never could before. It's both beautiful and functional - exactly what we needed.",
-      rating: 4,
-      ngoLogo: "💧",
-    },
-  ],
+    tasksCompleted: number;
+    ngosHelped: number;
+    hoursContributed: number;
+  };
+  badges: { id: number; name: string; icon: string; description: string }[];
+  topSkills: string[];
+  completedTasks: {
+    id: number;
+    ngoName: string;
+    taskTitle: string;
+    completionDate: string;
+    feedback: string;
+    rating: number;
+    ngoLogo: string;
+  }[];
 }
 
 // Badge Component with Tooltip
-function Badge({ badge }: { badge: (typeof volunteerData.badges)[0] }) {
+function Badge({ badge }: { badge: ProfileData['badges'][0] }) {
   const [showTooltip, setShowTooltip] = useState(false)
 
   return (
@@ -120,7 +61,7 @@ function StarRating({ rating }: { rating: number }) {
 }
 
 // Portfolio Card Component
-function PortfolioCard({ task }: { task: (typeof volunteerData.completedTasks)[0] }) {
+function PortfolioCard({ task }: { task: ProfileData['completedTasks'][0] }) {
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow duration-200">
       {/* Header */}
@@ -149,13 +90,43 @@ function PortfolioCard({ task }: { task: (typeof volunteerData.completedTasks)[0
   )
 }
 
-export default function PublicProfilePage() {
+export default function PublicProfilePage({ params }: { params: { username: string } }) {
+  const { username } = params; // Destructure username here
+  const [profileData, setProfileData] = useState<ProfileData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!username) return;
+
+    const fetchProfileData = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await fetch(`/api/profile/${username}`);
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to load profile.");
+        }
+        const data = await response.json();
+        setProfileData(data);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProfileData();
+  }, [username]); // Use the destructured variable in the dependency array
+
   const handleShare = async () => {
+    if (!profileData) return;
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `${volunteerData.name}'s Impact Portfolio`,
-          text: `Check out ${volunteerData.name}'s volunteer contributions on Aarambh`,
+          title: `${profileData.name}'s Impact Portfolio`,
+          text: `Check out ${profileData.name}'s volunteer contributions on Aarambh`,
           url: window.location.href,
         })
       } catch (error) {
@@ -168,6 +139,29 @@ export default function PublicProfilePage() {
     }
   }
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-xl font-medium text-[#718096]">Loading Profile...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center text-center p-4">
+        <div>
+          <h2 className="text-2xl font-bold text-red-500 mb-2">Oops! Something went wrong.</h2>
+          <p className="text-lg text-[#718096]">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!profileData) {
+    return null; // Or a more specific "not found" component
+  }
+
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -175,19 +169,19 @@ export default function PublicProfilePage() {
         <div className="text-center mb-12">
           <div className="relative inline-block mb-6">
             <img
-              src={volunteerData.profilePicture || "/placeholder.svg"}
-              alt={volunteerData.name}
+              src={profileData.profilePicture || "/placeholder.svg"}
+              alt={profileData.name}
               className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg"
             />
           </div>
 
-          <h1 className="text-4xl md:text-5xl font-bold text-[#1A202C] mb-4">{volunteerData.name}</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-[#1A202C] mb-4">{profileData.name}</h1>
 
-          <h2 className="text-xl text-[#718096] mb-6 max-w-2xl mx-auto leading-relaxed">{volunteerData.headline}</h2>
+          <h2 className="text-xl text-[#718096] mb-6 max-w-2xl mx-auto leading-relaxed">{profileData.headline}</h2>
 
           <div className="flex items-center justify-center text-[#718096] mb-8">
             <MapPin size={18} className="mr-2" />
-            {volunteerData.location}
+            {profileData.location}
           </div>
 
           <button
@@ -204,19 +198,19 @@ export default function PublicProfilePage() {
           <div className="grid md:grid-cols-3 gap-6">
             <div className="text-center">
               <Award className="w-8 h-8 text-[#FF9933] mx-auto mb-4" />
-              <div className="text-3xl font-bold text-[#1A202C] mb-2">{volunteerData.stats.tasksCompleted}</div>
+              <div className="text-3xl font-bold text-[#1A202C] mb-2">{profileData.stats.tasksCompleted}</div>
               <p className="text-[#718096] font-medium">Tasks Completed</p>
             </div>
 
             <div className="text-center">
               <Users className="w-8 h-8 text-[#FF9933] mx-auto mb-4" />
-              <div className="text-3xl font-bold text-[#1A202C] mb-2">{volunteerData.stats.ngosHelped}</div>
+              <div className="text-3xl font-bold text-[#1A202C] mb-2">{profileData.stats.ngosHelped}</div>
               <p className="text-[#718096] font-medium">NGOs Helped</p>
             </div>
 
             <div className="text-center">
               <Clock className="w-8 h-8 text-[#FF9933] mx-auto mb-4" />
-              <div className="text-3xl font-bold text-[#1A202C] mb-2">{volunteerData.stats.hoursContributed}</div>
+              <div className="text-3xl font-bold text-[#1A202C] mb-2">{profileData.stats.hoursContributed}</div>
               <p className="text-[#718096] font-medium">Hours Contributed</p>
             </div>
           </div>
@@ -226,7 +220,7 @@ export default function PublicProfilePage() {
         <div className="mb-12">
           <h2 className="text-3xl font-bold text-[#1A202C] mb-8 text-center">Badges & Achievements</h2>
           <div className="grid grid-cols-3 md:grid-cols-6 gap-6 justify-items-center">
-            {volunteerData.badges.map((badge) => (
+            {profileData.badges.map((badge) => (
               <Badge key={badge.id} badge={badge} />
             ))}
           </div>
@@ -236,7 +230,7 @@ export default function PublicProfilePage() {
         <div className="mb-12">
           <h2 className="text-3xl font-bold text-[#1A202C] mb-8 text-center">Top Skills</h2>
           <div className="flex flex-wrap justify-center gap-3">
-            {volunteerData.topSkills.map((skill, index) => (
+            {profileData.topSkills.map((skill, index) => (
               <span
                 key={index}
                 className="px-4 py-2 bg-[#FF9933]/10 text-[#FF9933] font-medium rounded-full border border-[#FF9933]/20 hover:bg-[#FF9933]/20 transition-colors duration-200"
@@ -251,7 +245,7 @@ export default function PublicProfilePage() {
         <div className="mb-12">
           <h2 className="text-3xl font-bold text-[#1A202C] mb-8 text-center">Completed Contributions</h2>
           <div className="space-y-6">
-            {volunteerData.completedTasks.map((task) => (
+            {profileData.completedTasks.map((task) => (
               <PortfolioCard key={task.id} task={task} />
             ))}
           </div>

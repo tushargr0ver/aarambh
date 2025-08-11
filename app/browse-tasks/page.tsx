@@ -4,89 +4,13 @@ import { useState, useEffect } from 'react'
 import { Search, Filter, ChevronDown, MapPin, Clock, User, Settings, LogOut, X } from 'lucide-react'
 import Link from 'next/link'
 
-// Mock data for tasks
-const mockTasks = [
-  {
-    id: 1,
-    ngoName: "GreenEarth Foundation",
-    ngoLogo: "🌱",
-    title: "Design Social Media Graphics for Earth Day Campaign",
-    skills: ["Graphic Design", "Social Media"],
-    location: "Remote",
-    duration: "2-3 hours",
-    category: "Environment",
-    datePosted: "2024-01-15",
-    type: "Remote"
-  },
-  {
-    id: 2,
-    ngoName: "EduForAll Initiative",
-    ngoLogo: "📚",
-    title: "Translate Educational Content to Spanish",
-    skills: ["Translation", "Education"],
-    location: "Remote",
-    duration: "Under 30 mins",
-    category: "Education",
-    datePosted: "2024-01-14",
-    type: "Remote"
-  },
-  {
-    id: 3,
-    ngoName: "HealthFirst Network",
-    ngoLogo: "🏥",
-    title: "Write Blog Post on Mental Health Awareness",
-    skills: ["Content Writing", "Healthcare"],
-    location: "Remote",
-    duration: "1-2 hours",
-    category: "Healthcare",
-    datePosted: "2024-01-13",
-    type: "Remote"
-  },
-  {
-    id: 4,
-    ngoName: "CleanWater Project",
-    ngoLogo: "💧",
-    title: "Create Infographic on Water Conservation",
-    skills: ["Graphic Design", "Research"],
-    location: "Remote",
-    duration: "3-4 hours",
-    category: "Environment",
-    datePosted: "2024-01-12",
-    type: "Remote"
-  },
-  {
-    id: 5,
-    ngoName: "FoodBank Alliance",
-    ngoLogo: "🍎",
-    title: "Volunteer Coordinator for Weekend Event",
-    skills: ["Event Planning", "Communication"],
-    location: "New York, NY",
-    duration: "4+ hours",
-    category: "Community",
-    datePosted: "2024-01-11",
-    type: "On-site"
-  },
-  {
-    id: 6,
-    ngoName: "TechForGood",
-    ngoLogo: "💻",
-    title: "Code Review for Nonprofit Website",
-    skills: ["Web Development", "Code Review"],
-    location: "Remote",
-    duration: "1-2 hours",
-    category: "Technology",
-    datePosted: "2024-01-10",
-    type: "Remote"
-  }
-]
-
 export default function BrowseTasksPage() {
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState('Most Recent')
-  const [filteredTasks, setFilteredTasks] = useState(mockTasks)
-  const [isLoading, setIsLoading] = useState(false)
+  const [filteredTasks, setFilteredTasks] = useState([]) // Start with an empty array
+  const [isLoading, setIsLoading] = useState(true) // Start in loading state
 
   // Filter states
   const [selectedSkills, setSelectedSkills] = useState<string[]>([])
@@ -100,33 +24,29 @@ export default function BrowseTasksPage() {
 
   // Apply filters and search
   useEffect(() => {
-    setIsLoading(true)
-    
-    setTimeout(() => {
-      let filtered = mockTasks.filter(task => {
-        const matchesSearch = searchQuery === '' || 
-          task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          task.ngoName.toLowerCase().includes(searchQuery.toLowerCase())
-        
-        const matchesSkills = selectedSkills.length === 0 || 
-          selectedSkills.some(skill => task.skills.some(taskSkill => taskSkill.includes(skill)))
-        
-        const matchesCategory = selectedCategories.length === 0 || 
-          selectedCategories.includes(task.category)
-        
-        const matchesType = selectedTaskType === '' || task.type === selectedTaskType
-        
-        return matchesSearch && matchesSkills && matchesCategory && matchesType
-      })
+    const fetchTasks = async () => {
+      setIsLoading(true);
+      
+      const params = new URLSearchParams();
+      if (searchQuery) params.append('query', searchQuery);
+      if (selectedSkills.length > 0) params.append('skills', selectedSkills.join(','));
+      if (selectedCategories.length > 0) params.append('categories', selectedCategories.join(','));
+      if (selectedTaskType) params.append('taskType', selectedTaskType);
+      if (sortBy) params.append('sortBy', sortBy);
 
-      // Sort results
-      if (sortBy === 'Most Recent') {
-        filtered.sort((a, b) => new Date(b.datePosted).getTime() - new Date(a.datePosted).getTime())
+      try {
+        const response = await fetch(`/api/tasks?${params.toString()}`);
+        const data = await response.json();
+        setFilteredTasks(data);
+      } catch (error) {
+        console.error("Failed to fetch tasks:", error);
+        setFilteredTasks([]); // Clear tasks on error
+      } finally {
+        setIsLoading(false);
       }
+    };
 
-      setFilteredTasks(filtered)
-      setIsLoading(false)
-    }, 300)
+    fetchTasks();
   }, [searchQuery, selectedSkills, selectedCategories, selectedAvailability, selectedTaskType, selectedDatePosted, sortBy])
 
   const clearAllFilters = () => {
@@ -295,7 +215,7 @@ export default function BrowseTasksPage() {
             {/* Desktop Navigation */}
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-8">
-                <a href="#how-it-works" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">How It Works</a>
+                <Link href="/#how-it-works" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">How It Works</Link>
                 <Link href="/ngo/dashboard" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">For NGOs</Link>
                 <Link href="/browse-tasks" className="text-[#FF9933] font-medium">Browse Tasks</Link>
               </div>

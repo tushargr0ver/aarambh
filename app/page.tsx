@@ -55,7 +55,7 @@ export default function LandingPage() {
             {/* Desktop Navigation */}
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-8">
-                <a href="#how-it-works" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">How It Works</a>
+                <Link href="/#how-it-works" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">How It Works</Link>
                 <Link href="/ngo/dashboard" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">For NGOs</Link>
                 <Link href="/browse-tasks" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">Browse Tasks</Link>
               </div>
@@ -84,7 +84,7 @@ export default function LandingPage() {
           {isMenuOpen && (
             <div className="md:hidden">
               <div className="px-2 pt-2 pb-3 space-y-1 bg-white border-t">
-                <a href="#how-it-works" className="block px-3 py-2 text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">How It Works</a>
+                <Link href="/#how-it-works" className="block px-3 py-2 text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">How It Works</Link>
                 <Link href="/ngo/dashboard" className="block px-3 py-2 text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">For NGOs</Link>
                 <Link href="/browse-tasks" className="block px-3 py-2 text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">Browse Tasks</Link>
                 <Link href="/dashboard" className="block px-3 py-2 text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">Log In</Link>
