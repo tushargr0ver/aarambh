@@ -15,9 +15,10 @@ import {
   Calendar,
   Bookmark,
 } from "lucide-react"
+import Link from "next/link";
 
 // Mock data
-const dashboardData = {
+const initialDashboardData = {
   volunteer: {
     name: "John Doe",
     totalTasks: 15,
@@ -228,6 +229,26 @@ function SkillPieChart({ data }: { data: Array<{ skill: string; percentage: numb
 export default function VolunteerDashboard() {
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [activeTab, setActiveTab] = useState("active")
+  const [dashboardData, setDashboardData] = useState(initialDashboardData);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch('/api/dashboard');
+        const data = await response.json();
+        setDashboardData(data);
+      } catch (error) {
+        console.error("Failed to fetch dashboard data:", error);
+        // Optionally, set an error state to show a message to the user
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -241,7 +262,13 @@ export default function VolunteerDashboard() {
         return "bg-gray-100 text-gray-800"
     }
   }
-
+if (isLoading) {
+    return (
+        <div className="min-h-screen bg-white flex items-center justify-center">
+            <div className="text-xl font-medium text-[#718096]">Loading Dashboard...</div>
+        </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
@@ -250,21 +277,23 @@ export default function VolunteerDashboard() {
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <div className="flex-shrink-0">
-              <h1 className="text-2xl font-bold text-[#1A202C]">Aarambh</h1>
+              <Link href="/" className="text-2xl font-bold text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">
+                Aarambh
+              </Link>
             </div>
 
             {/* Desktop Navigation */}
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-8">
-                <a href="#how-it-works" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">
+                <Link href="/#how-it-works" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">
                   How It Works
-                </a>
-                <a href="#for-ngos" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">
+                </Link>
+                <Link href="/ngo/dashboard" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">
                   For NGOs
-                </a>
-                <a href="/browse-tasks" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">
+                </Link>
+                <Link href="/browse-tasks" className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200">
                   Browse Tasks
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -282,25 +311,25 @@ export default function VolunteerDashboard() {
 
               {isProfileOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2">
-                  <a href="#dashboard" className="flex items-center px-4 py-2 text-[#FF9933] bg-[#F7FAFC] font-medium">
+                  <Link href="/dashboard" className="flex items-center px-4 py-2 text-[#FF9933] bg-[#F7FAFC] font-medium">
                     <User size={16} className="mr-2" />
                     My Dashboard
-                  </a>
-                  <a
-                    href="#settings"
+                  </Link>
+                  <Link
+                    href="/profile/johndoe"
                     className="flex items-center px-4 py-2 text-[#1A202C] hover:bg-[#F7FAFC] transition-colors duration-200"
                   >
                     <Settings size={16} className="mr-2" />
                     Settings
-                  </a>
+                  </Link>
                   <hr className="my-2" />
-                  <a
-                    href="#logout"
+                  <Link
+                    href="/"
                     className="flex items-center px-4 py-2 text-[#1A202C] hover:bg-[#F7FAFC] transition-colors duration-200"
                   >
                     <LogOut size={16} className="mr-2" />
                     Log Out
-                  </a>
+                  </Link>
                 </div>
               )}
             </div>
@@ -314,9 +343,9 @@ export default function VolunteerDashboard() {
           <h1 className="text-3xl md:text-4xl font-bold text-[#1A202C] mb-4 sm:mb-0">
             Welcome back, {dashboardData.volunteer.name}!
           </h1>
-          <button className="bg-[#FF9933] text-white px-6 py-3 rounded-lg font-medium hover:scale-105 transition-transform duration-200">
+          <Link href="/browse-tasks" className="bg-[#FF9933] text-white px-6 py-3 rounded-lg font-medium hover:scale-105 transition-transform duration-200">
             Find a New Task
-          </button>
+          </Link>
         </div>
 
         {/* Impact Summary Section */}
@@ -417,10 +446,10 @@ export default function VolunteerDashboard() {
                       <h3 className="font-semibold text-[#1A202C]">{task.title}</h3>
                       <p className="text-[#718096] text-sm">{task.ngo}</p>
                     </div>
-                    <button className="border-2 border-[#FF9933] text-[#FF9933] px-4 py-2 rounded-lg font-medium hover:bg-[#FF9933] hover:text-white transition-colors duration-200 flex items-center">
+                    <Link href={`/task/active/${task.id}`} className="border-2 border-[#FF9933] text-[#FF9933] px-4 py-2 rounded-lg font-medium hover:bg-[#FF9933] hover:text-white transition-colors duration-200 flex items-center">
                       <Eye size={16} className="mr-2" />
                       View Task
-                    </button>
+                    </Link>
                   </div>
                 ))}
               </>

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react"; // You can use any icon lib like Lucide or HeroIcons
 import LoginOverlay from "./LoginOverlay";
 import SignupOverlay from "./SignupOverlay";
+import Link from "next/link";
 
 type NavbarProps = {
   setLoginOverlay: (value: boolean) => void;
@@ -34,30 +35,30 @@ const Navbar = ({ setLoginOverlay, setSignupOverlay }: NavbarProps) => {
                 <div className="flex justify-between items-center h-16">
                     {/* Logo */}
                     <div className="flex-shrink-0">
-                        <h1 className="text-2xl font-bold text-[#1A202C]">Aarambh</h1>
+                        <Link href="/" className="text-2xl font-bold text-[#1A202C]">Aarambh</Link>
                     </div>
 
                     {/* Desktop Navigation */}
                     <div className="hidden md:block">
                         <div className="ml-10 flex items-baseline space-x-8">
-                            <a
-                                href="#how-it-works"
+                            <Link
+                                href="/#how-it-works"
                                 className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200"
                             >
                                 How It Works
-                            </a>
-                            <a
-                                href="#for-ngos"
+                            </Link>
+                            <Link
+                                href="/ngo/dashboard"
                                 className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200"
                             >
                                 For NGOs
-                            </a>
-                            <a
-                                href="#browse-tasks"
+                            </Link>
+                            <Link
+                                href="/browse-tasks"
                                 className="text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200"
                             >
                                 Browse Tasks
-                            </a>
+                            </Link>
                         </div>
                     </div>
 
@@ -94,31 +95,39 @@ const Navbar = ({ setLoginOverlay, setSignupOverlay }: NavbarProps) => {
                 {isMenuOpen && (
                     <div className="md:hidden">
                         <div className="px-2 pt-2 pb-3 space-y-1 bg-white border-t">
-                            <a
-                                href="#how-it-works"
+                            <Link
+                                href="/#how-it-works"
                                 className="block px-3 py-2 text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200"
                             >
                                 How It Works
-                            </a>
-                            <a
-                                href="#for-ngos"
+                            </Link>
+                            <Link
+                                href="/ngo/dashboard"
                                 className="block px-3 py-2 text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200"
                             >
                                 For NGOs
-                            </a>
-                            <a
-                                href="#browse-tasks"
+                            </Link>
+                            <Link
+                                href="/browse-tasks"
                                 className="block px-3 py-2 text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200"
                             >
                                 Browse Tasks
-                            </a>
-                            <a
-                                href="#login"
-                                className="block px-3 py-2 text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200"
+                            </Link>
+                            <button
+                                onClick={() => {
+                                    setLoginOverlay(true);
+                                    setIsMenuOpen(false);
+                                }}
+                                className="block w-full text-left px-3 py-2 text-[#1A202C] hover:text-[#FF9933] transition-colors duration-200"
                             >
                                 Log In
-                            </a>
-                            <button className="w-full mt-2 bg-[#FF9933] text-white px-6 py-2 rounded-lg font-medium">
+                            </button>
+                            <button 
+                                onClick={() => {
+                                    setSignupOverlay(true);
+                                    setIsMenuOpen(false);
+                                }}
+                                className="w-full mt-2 bg-[#FF9933] text-white px-6 py-2 rounded-lg font-medium">
                                 Sign Up
                             </button>
                         </div>
